@@ -1,0 +1,22 @@
+[
+  {
+    "id": "b30722b6-0f9f-4228-b249-cafc1c76efa4",
+    "name": "Comic Daredevil",
+    "avatar": "/avatars/avatar5.png"
+  },
+  {
+    "id": "a72f3411-aae7-4283-9792-0f2b65fb002c",
+    "name": "Bullyese",
+    "avatar": "/avatars/avatar6.png"
+  },
+  {
+    "id": "1ca232dd-eaa4-4a67-ae07-a889bb8e9c87",
+    "name": "Matt Murdock",
+    "avatar": "/avatars/avatar3.png"
+  },
+  {
+    "id": "a47bbe6e-7595-4bf7-bf82-5f944fac1433",
+    "name": "Daredevil",
+    "avatar": "/avatars/avatar1.png"
+  }
+]
