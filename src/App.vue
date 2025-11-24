@@ -5,18 +5,18 @@
       <main class="flex-1 container mx-auto p-4">
         <router-view />
       </main>
-      <footer class="p-4 text-center">© Microblog Lab5</footer>
+      <footer class="p-4 text-center">© Microblog Lab6</footer>
     </div>
+    <ToastContainer />
   </div>
 </template>
 
 <script lang="ts">
 import { ref, onMounted, defineComponent } from 'vue'
 import HeaderNav from './components/HeaderNav.vue'
+import ToastContainer from './components/ToastContainer.vue'
 
-export default defineComponent({
-  components: { HeaderNav },
-  setup() {
+export default defineComponent({ components: { HeaderNav, ToastContainer }, setup() {
     const theme = ref('light')
 
     function toggleTheme() {
@@ -30,6 +30,5 @@ export default defineComponent({
     })
 
     return { theme, toggleTheme }
-  }
-})
+  } })
 </script>

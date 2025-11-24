@@ -10,6 +10,10 @@
       </div>
     </div>
 
+    <div v-if="loading" class="flex justify-center my-8">
+      <button class="btn loading">Loading</button>
+    </div>
+
     <div class="grid gap-4">
       <PostCard v-for="p in filteredPosts" :key="p.id" :post="p" :author="authorFor(p.authorId)" />
     </div>
@@ -17,17 +21,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useDataStore, type Post, type Author } from '../stores/useDataStore'
 import PostCard from '../components/PostCard.vue'
 import { POST_TYPES } from '../data/constants'
+import { useAuthors } from '../composables/useAuthors'
+import { usePosts } from '../composables/usePosts'
 
-export default defineComponent({
-  components: { PostCard },
-  setup() {
+export default defineComponent({ components: { PostCard }, setup() {
     const store = useDataStore()
     const filter = ref('All')
     const types = POST_TYPES
+    const { load: loadAuthors } = useAuthors()
+    const { load: loadPosts, isLoading } = usePosts()
+
+    onMounted(async () => {
+      await loadAuthors()
+      await loadPosts()
+    })
+
+    const loading = isLoading
 
     const filteredPosts = computed(() => {
       if (filter.value === 'All') return store.posts
@@ -35,10 +48,9 @@ export default defineComponent({
     })
 
     function authorFor(id: string): Author {
-      return store.getAuthorById(id) || { name: 'Unknown', avatar: '/avatars/avatar1.png', id }
+      return store.authors.find(a => a.id === id) || { name: 'Unknown', avatar: '/avatars/avatar1.png', id }
     }
 
-    return { filter, types, filteredPosts, authorFor }
-  }
-})
+    return { filter, types, filteredPosts, authorFor, loading }
+  } })
 </script>

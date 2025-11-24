@@ -35,42 +35,31 @@ import { useRoute } from 'vue-router'
 import { useDataStore } from '../stores/useDataStore'
 import PostCard from '../components/PostCard.vue'
 import { POST_TYPES } from '../data/constants'
+import { useAuthors } from '../composables/useAuthors'
+import { usePosts } from '../composables/usePosts'
 
-export default defineComponent({
-  components: { PostCard },
-  setup() {
+export default defineComponent({ components: { PostCard }, setup() {
     const route = useRoute()
     const store = useDataStore()
+    const { load: loadAuthors } = useAuthors()
+    const { load: loadPosts } = usePosts()
 
-    const author = ref({
-      name: 'Unknown',
-      avatar: '/avatars/avatar1.png',
-      id: String(route.params.id)
-    })
-
+    const author = ref({ name: 'Unknown', avatar: '/avatars/avatar1.png', id: String(route.params.id) })
     const types = POST_TYPES
     const filter = ref('All')
-    const postsList = ref<HTMLElement | null>(null)
+    const postsListRef = ref<HTMLElement | null>(null)
 
     onMounted(async () => {
-      const a = store.getAuthorById(String(route.params.id))
+      await loadAuthors()
+      await loadPosts()
+      const a = store.authors.find(x => x.id === String(route.params.id))
       if (a) author.value = a
-
       await nextTick()
-
-      setTimeout(() => {
-        postsList.value?.scrollIntoView({ behavior: 'smooth' })
-      }, 500)
     })
 
-    const allPosts = computed(() => store.postsByAuthor(String(route.params.id)))
-    const filtered = computed(() =>
-        filter.value === 'All'
-            ? allPosts.value
-            : allPosts.value.filter(p => p.type === filter.value)
-    )
+    const allPosts = computed(() => store.posts.filter(p => p.authorId === String(route.params.id)))
+    const filtered = computed(() => filter.value === 'All' ? allPosts.value : allPosts.value.filter(p => p.type === filter.value))
 
-    return { author, types, filter, filtered, postsList, allPosts }
-  }
-})
+    return { author, types, filter, filtered, postsList: postsListRef, allPosts }
+  } })
 </script>
